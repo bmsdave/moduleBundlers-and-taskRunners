@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --config webpack.first.conf.js"
+    "start": "webpack-dev-server --config webpack.conf.js",
+    "build": "webpack  --config webpack.conf.js"
   },
   "author": "Vadim Gorbachev",
   "license": "MIT",
