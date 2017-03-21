@@ -1,38 +1,21 @@
 const webpack = require('webpack');
-const conf = require('./config/config.js');
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
+
 module.exports = {
-    devtool: 'source-map',
     entry: {
-        vendors: [
-            "jquery",
-            "jquery-mousewheel",
-            "jquery-mask-plugin",
-            'stacktrace-js'
-        ],
-        ngVendors: [
-            'angular',
-            'angular-resource',
-            'angular-sanitize',
-            'angular-translate',
-            'ng-file-upload',
-            'ui-select',
-            'ng-mask'
-        ],
-        app: [path.join(__dirname, conf.paths.src, 'index.js')],
-        'polyfill': 'babel-polyfill'
+        bundle: [path.join(__dirname, 'src', 'index.js')]
     },
     output: {
         filename: '[name].js',
-        path: path.join(__dirname, conf.paths.dst)
+        path: path.join(__dirname, 'dist')
     },
     module: {
         loaders: [
             {
                 test: /\.js$/,
-                exclude: [/karma/, /vendors/, /node_modules/],
+                exclude: [/node_modules/],
                 loader: 'babel-loader'
             },
             {
@@ -42,21 +25,16 @@ module.exports = {
             },
             {
                 test: /\.less$/,
-                // loader: 'style-loader?sourceMap=true!css-loader?importLoaders=1&sourceMap=true!postcss-loader!less-loader?sourceMap=true'
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: "css-loader?importLoaders=1!postcss-loader!less-loader"
-                })
+                loader: ExtractTextPlugin.extract("css-loader?importLoaders=1&sourceMap=true!postcss-loader?sourceMap=true!less-loader?sourceMap=true")
             },
             {
                 test: /\.css$/,
-                // loader: 'style-loader?sourceMap=true!css-loader?importLoaders=1&sourceMap=true!postcss-loader'
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: "css-loader?importLoaders=1!postcss-loader"
-                })
+                loader: ExtractTextPlugin.extract("css-loader?sourceMap")
             },
-            {test: /\.html$/, loader: 'raw-loader'},
+            {
+                test: /\.html/,
+                loader: 'file-loader?name=[name].[ext]'
+            },
             {
                 test: /\.(png|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: "file-loader",
@@ -89,27 +67,12 @@ module.exports = {
                 NODE_ENV: "production"
             }
         }),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.jQuery": "jquery",
-            "jquery-ui": "./vendors/jquery-ui/js/jquery-ui-1.10.4.custom.js"
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-
-            // filename: "vendor.js"
-            names: ['vendors', 'ngVendors', 'polyfill'],
-
-            // (Give the chunk a different name)
-            minChunks: Infinity
-        }),
-        new ExtractTextPlugin("style.css"),
-        new webpack.HotModuleReplacementPlugin(),
+        new ExtractTextPlugin("index.css"),
         new CompressionPlugin({
             asset: "[path].gz[query]",
             algorithm: "gzip",
             test: /\.svg$|\.eot$|\.[ot]tf$|\.woff2$|\.woff$|\.js$|\.css$/,
-            threshold: 10240,
+            threshold: 40,
             minRatio: 0.8
         }),
         new webpack.LoaderOptionsPlugin({

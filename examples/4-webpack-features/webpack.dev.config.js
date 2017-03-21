@@ -1,55 +1,21 @@
 const webpack = require('webpack');
-const conf = require('./config/config.js');
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const HappyPack = require('happypack');
-const happyThreadPool = HappyPack.ThreadPool({ size: 5 });
-
-function createHappyPlugin(id, loaders) {
-    return new HappyPack({
-        id: id,
-        loaders: loaders,
-        threadPool: happyThreadPool,
-
-        // disable happy caching with HAPPY_CACHE=0
-        cache: process.env.HAPPY_CACHE !== '0',
-
-        // make happy more verbose with HAPPY_VERBOSE=1
-        verbose: process.env.HAPPY_VERBOSE === '1',
-    });
-}
 
 module.exports = {
-    devtool: 'cheap-module-eval-source-map',
     entry: {
-        vendors: [
-            "jquery",
-            "jquery-mousewheel",
-            "jquery-mask-plugin",
-            'stacktrace-js'
-        ],
-        ngVendors: [
-            'angular',
-            'angular-resource',
-            'angular-sanitize',
-            'angular-translate',
-            'ng-file-upload',
-            'ui-select',
-            'ng-mask'
-        ],
-        app: [path.join(__dirname, conf.paths.src, 'index.js')],
-        'polyfill': 'babel-polyfill'
+        bundle: [path.join(__dirname, 'src', 'index.js')]
     },
     output: {
         filename: '[name].js',
-        path: path.join(__dirname, conf.paths.dst)
+        path: path.join(__dirname, 'dist')
     },
     module: {
         loaders: [
             {
                 test: /\.js$/,
-                exclude: [/karma/, /vendors/, /node_modules/],
-                loader: 'happypack/loader?id=js'
+                exclude: [/node_modules/],
+                loader: 'babel-loader'
             },
             {
                 test: /\.ts$/,
@@ -64,7 +30,10 @@ module.exports = {
                 test: /\.css$/,
                 loader: ExtractTextPlugin.extract("css-loader?sourceMap")
             },
-            {test: /\.html$/, loader: 'raw-loader'},
+            {
+                test: /\.html/,
+                loader: 'file-loader?name=[name].[ext]'
+            },
             {
                 test: /\.(png|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: "file-loader",
@@ -92,22 +61,6 @@ module.exports = {
         ]
     },
     plugins: [
-        createHappyPlugin('js', ['babel-loader?cacheDirectory=true']),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.jQuery": "jquery",
-            "jquery-ui": "./vendors/jquery-ui/js/jquery-ui-1.10.4.custom.js"
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-
-            // filename: "vendor.js"
-            names: ['vendors', 'ngVendors', 'polyfill'],
-
-            // (Give the chunk a different name)
-            minChunks: Infinity
-        }),
-        new ExtractTextPlugin("style.css"),
-        new webpack.HotModuleReplacementPlugin()
+        new ExtractTextPlugin("index.css")
     ]
 };
