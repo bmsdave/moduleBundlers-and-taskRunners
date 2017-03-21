@@ -77,7 +77,7 @@ gulp.task('zip', () => {
 
 gulp.task('upload', () => {
 	return gulp.src('prepared/**')
-		.pipe(pages())
+		.pipe(pages({remoteUrl: 'https://github.com/bmsdave/moduleBundlers-and-taskRunners.git'}))
 });
 
 gulp.task('archive', (callback) => {
