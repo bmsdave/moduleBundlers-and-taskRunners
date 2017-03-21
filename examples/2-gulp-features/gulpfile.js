@@ -18,4 +18,8 @@ gulp.task('build:css', function () {
         .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build', ['build:html', 'build:js', 'build:css']);
+gulp.task('build', function (callback) {
+    runSequence(
+        ['build:html', 'build:js', 'build:css']
+        ,callback)
+});

@@ -3,6 +3,7 @@ const del = require('del');
 const less = require('gulp-less');
 const concat = require('gulp-concat');
 const path = require('path');
+const runSequence = require('run-sequence');
 
 gulp.task('default', ['build']);
 
@@ -30,4 +31,10 @@ gulp.task('build:less', function () {
         .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build', ['build:html', 'build:js', 'build:less']);
+gulp.task('build', function (callback) {
+    return runSequence(
+        'clean',
+        ['build:html', 'build:js', 'build:less'],
+        callback
+    )
+});
