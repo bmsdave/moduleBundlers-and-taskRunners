@@ -5,11 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "gulp clean",
     "build": "gulp"
   },
   "author": "Vadim Gorbachev",
   "license": "MIT",
   "devDependencies": {
-    "gulp": "^3.9.1"
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-less": "^3.3.0",
+    "run-sequence": "^1.2.2"
   }
 }
