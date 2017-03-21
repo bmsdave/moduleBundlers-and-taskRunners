@@ -14,8 +14,7 @@ gulp.task('clean', function () {
 
 gulp.task('build:js', function () {
     return gulp.src([
-        path.join('src', 'app', 'app.js'),
-        path.join('src', 'index.js')
+        './src/**/*.js'
     ])
         .pipe(concat('bundle.js'))
         .pipe(connect.reload())
@@ -33,14 +32,6 @@ gulp.task('build:less', function () {
         .pipe(less())
         .pipe(connect.reload())
         .pipe(gulp.dest('dist'));
-});
-
-gulp.task('build', function (callback) {
-    return runSequence(
-        'clean',
-        ['build:html', 'build:js', 'build:less'],
-        callback
-    )
 });
 
 gulp.task('connect', function() {

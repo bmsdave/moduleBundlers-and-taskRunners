@@ -1,40 +1,33 @@
 const gulp = require('gulp');
-const del = require('del');
-const less = require('gulp-less');
-const concat = require('gulp-concat');
 const path = require('path');
+const plugins = require('gulp-load-plugins')();
 const runSequence = require('run-sequence');
 
-gulp.task('default', ['build']);
+require('./tasks/fromStep1');
 
-gulp.task('clean', function () {
-    return del(path.join('dist'));
-});
 
-gulp.task('build:js', function () {
-    return gulp.src([
-        path.join('src', 'app', 'app.js'),
-        path.join('src', 'index.js')
-    ])
-        .pipe(concat('bundle.js'))
-        .pipe(gulp.dest('dist'));
-});
+const conf = {};
 
-gulp.task('build:html', function () {
-    return gulp.src([path.join('src', 'index.html')])
-        .pipe(gulp.dest('dist'));
-});
+/**
+ * create task from file
+ * @param task {string} name of task file without ".js"
+ * @param beforeTask {Array} array of task runnen before this
+ */
+function createTask(task, beforeTask) {
+    gulp.task(
+        task,
+        beforeTask || [],
+        require('.//tasks/task_' + task)(gulp, plugins, conf)
+    );
+}
 
-gulp.task('build:less', function () {
-    return gulp.src([path.join('src', 'index.less')])
-        .pipe(less())
-        .pipe(gulp.dest('dist'));
-});
+
+createTask('svg');
 
 gulp.task('build', function (callback) {
     return runSequence(
         'clean',
-        ['build:html', 'build:js', 'build:less'],
+        ['build:html', 'build:js', 'build:less', 'svg'],
         callback
     )
 });
