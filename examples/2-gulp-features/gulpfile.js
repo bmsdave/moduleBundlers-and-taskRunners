@@ -6,7 +6,9 @@ const runSequence = require('run-sequence');
 require('./tasks/fromStep1');
 
 
-const conf = {};
+const conf = {
+    karma: path.join(__dirname, '/karma.conf.js')
+};
 
 /**
  * create task from file
@@ -23,11 +25,17 @@ function createTask(task, beforeTask) {
 
 
 createTask('svg');
+createTask('karma');
 
 gulp.task('build', function (callback) {
     return runSequence(
         'clean',
-        ['build:html', 'build:js', 'build:less', 'svg'],
+        [
+            'build:html',
+            'build:js',
+            'build:less',
+            'svg'
+        ],
         callback
     )
 });
