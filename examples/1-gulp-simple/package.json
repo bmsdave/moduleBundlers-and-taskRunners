@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild": "gulp clean",
-    "build": "gulp"
+    "build": "gulp",
+    "start": "gulp watch"
   },
   "author": "Vadim Gorbachev",
   "license": "MIT",
